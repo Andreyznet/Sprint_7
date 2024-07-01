@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -18,26 +20,17 @@ import lombok.*;
 @RunWith(Parameterized.class)
 @AllArgsConstructor
 public class CreateOrderTest {
-    private final String firstNameValue;
-    private final String lastNameValue;
-    private final String addressValue;
-    private final int metroStationValue;
-    private final String phoneValue;
-    private final int rentTimeValue;
-    private final String deliveryDateValue;
-    private final String commentValue;
+
     private final List<String> colorValue;
 
-
     @Parameterized.Parameters
-    public static Object[][] getTestDataCreateOrder() {
-        return new Object[][]{
-                {"Anton", "Bekker", "London", 4, "+7 800 123 45 67", 5, "2024-06-06", "Пожалуйста принесите Чёрный", List.of("BLACK")},
-                {"Anton", "Bekker", "London", 4, "+7 800 123 45 67", 5, "2024-06-06", "Пожалуйста принесите Серый", List.of("GREY")},
-                {"Anton", "Bekker", "London", 4, "+7 800 123 45 67", 5, "2024-06-06", "Цвет не важен", null},
-                {"Anton", "Bekker", "London", 4, "+7 800 123 45 67", 5, "2024-06-06", "Хоти все цвета", List.of("GREY", "BLACK")},
-
-        };
+    public static Collection<Object[]> getTestDataCreateOrder() {
+        return Arrays.asList(new Object[][]{
+                {List.of("BLACK")},
+                {List.of("GREY")},
+                {null},
+                {List.of("GREY", "BLACK")}
+        });
     }
 
     @Before
@@ -50,8 +43,7 @@ public class CreateOrderTest {
     public void testTrackFieldInOrder() {
         OrdersClient ordersClient = new OrdersClient();
         ValidatableResponse emptyPasswordField = ordersClient.getOrdersResponse(
-                new Order(firstNameValue, lastNameValue, addressValue,
-                        metroStationValue, phoneValue, rentTimeValue, deliveryDateValue, commentValue, colorValue));
+                new Order("Anton", "Bekker", "London", 4, "+7 800 123 45 67", 5, "2024-06-06", "Пожалуйста принесите Чёрный", colorValue));
         emptyPasswordField
                 .statusCode(201);
         MatcherAssert.assertThat("track", notNullValue());

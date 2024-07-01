@@ -2,14 +2,13 @@ import data.Constants;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import java.util.List;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 public class ListOfOrdersTest implements Constants {
 
@@ -19,15 +18,18 @@ public class ListOfOrdersTest implements Constants {
     }
 
     @DisplayName("Check value orders in list of orders")
-    @Description("Проверка, что количество заказов, содержится в таблице заказов")
+    @Description("Проверка, что количество заказов содержится в таблице заказов")
     @Test
     public void testOrdersFieldInListOfOrders() {
-        Response response = given()
-                .when()
+        given()
                 .header("Content-type", "application/json")
-                .get(API_ORDER);
-        response.then().log().all();
-        MatcherAssert.assertThat("orders", notNullValue());
+                .when()
+                .get(API_ORDER)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(200)
+                .body("orders", instanceOf(List.class)) // Проверяем, что orders - список
+                .body("orders", hasSize(greaterThanOrEqualTo(1))); // Проверяем, что в списке есть заказы
     }
 }
-

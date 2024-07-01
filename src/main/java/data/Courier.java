@@ -1,7 +1,10 @@
 package data;
 
-import lombok.*;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Setter
@@ -13,6 +16,7 @@ public class Courier {
     private String firstName;
 
     public static Courier returnRandomCourier () {
-        return new Courier(RandomStringUtils.randomAlphabetic(10) + "", "123456", "Harry");
+        Faker faker = new Faker();
+        return new Courier(faker.name().username(), "123456", faker.name().firstName());
     }
 }
